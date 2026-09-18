@@ -29,8 +29,7 @@ import streamlit as st
 # Configuración y persistencia (mismo formato que las versiones de terminal/GUI)
 # ---------------------------------------------------------------------------
 
-DATA_FILE = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), "reportes.json")
+DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reportes.json")
 
 CATEGORIAS = [
     "Alumbrado público",
@@ -149,8 +148,7 @@ with tab_reportar:
         with st.form("form_reporte", clear_on_submit=True):
             categoria = st.selectbox("Categoría", CATEGORIAS)
             descripcion = st.text_area("Descripción del problema", height=100)
-            ubicacion = st.text_input(
-                "Ubicación (colonia / calle / referencia)")
+            ubicacion = st.text_input("Ubicación (colonia / calle / referencia)")
             foto = st.file_uploader(
                 "Foto de evidencia (opcional)", type=["png", "jpg", "jpeg"]
             )
@@ -163,8 +161,7 @@ with tab_reportar:
 
             if enviado:
                 if not descripcion.strip() or not ubicacion.strip():
-                    st.warning(
-                        "Por favor describe el problema e indica la ubicación.")
+                    st.warning("Por favor describe el problema e indica la ubicación.")
                 else:
                     data["ultimo_folio"] += 1
                     folio = f"MTY-{data['ultimo_folio']}"
@@ -202,8 +199,7 @@ with tab_consultar:
         if buscar and folio_input.strip():
             reporte = buscar_reporte(data, folio_input)
             if not reporte:
-                st.error(
-                    f"No se encontró ningún reporte con folio '{folio_input}'.")
+                st.error(f"No se encontró ningún reporte con folio '{folio_input}'.")
             else:
                 color = ESTATUS_COLOR.get(reporte["estatus"], "#999999")
                 st.markdown(f"### Folio #{reporte['folio']}")
@@ -215,8 +211,7 @@ with tab_consultar:
                 st.write(f"**Categoría:** {reporte['categoria']}")
                 st.write(f"**Descripción:** {reporte['descripcion']}")
                 st.write(f"**Ubicación:** {reporte['ubicacion']}")
-                st.write(
-                    f"**Anónimo:** {'Sí' if reporte['anonimo'] else 'No'}")
+                st.write(f"**Anónimo:** {'Sí' if reporte['anonimo'] else 'No'}")
                 st.write(f"**Registrado:** {reporte['fecha_registro']}")
 
                 st.markdown("**Historial de avance:**")
@@ -271,8 +266,17 @@ with tab_panel:
             color = ESTATUS_COLOR.get(val, "#ffffff")
             return f"background-color: {color}22"
 
+        # Styler.applymap fue removido en pandas 3.x en favor de Styler.map;
+        # se intenta con la API nueva y se cae a la anterior si no existe,
+        # para que funcione sin importar la versión de pandas instalada.
+        styler = df.style
+        if hasattr(styler, "map"):
+            styler = styler.map(resaltar_estatus, subset=["Estatus"])
+        else:
+            styler = styler.applymap(resaltar_estatus, subset=["Estatus"])
+
         st.dataframe(
-            df.style.applymap(resaltar_estatus, subset=["Estatus"]),
+            styler,
             use_container_width=True,
             hide_index=True,
         )
@@ -290,8 +294,7 @@ with tab_panel:
             actualizar = st.button("Actualizar")
 
         if actualizar:
-            reporte = next(
-                (r for r in reportes if r["folio"] == folio_sel), None)
+            reporte = next((r for r in reportes if r["folio"] == folio_sel), None)
             if reporte:
                 if reporte["estatus"] == nuevo_estatus:
                     st.info("El folio ya tiene ese estatus.")
@@ -301,6 +304,5 @@ with tab_panel:
                         {"estatus": nuevo_estatus, "fecha": ahora()}
                     )
                     guardar_datos(data)
-                    st.success(
-                        f"Folio #{reporte['folio']} actualizado a '{nuevo_estatus}'.")
+                    st.success(f"Folio #{reporte['folio']} actualizado a '{nuevo_estatus}'.")
                     st.rerun()
