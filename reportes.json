@@ -1,0 +1,43 @@
+{
+  "ultimo_folio": 1002,
+  "reportes": [
+    {
+      "folio": "MTY-1001",
+      "categoria": "Alumbrado público",
+      "descripcion": "En mi calle no hay luz",
+      "ubicacion": "apodaca",
+      "foto": null,
+      "anonimo": false,
+      "contacto": "mail",
+      "estatus": "Nuevo",
+      "historial": [
+        {
+          "estatus": "Nuevo",
+          "fecha": "2026-09-18 14:52"
+        }
+      ],
+      "fecha_registro": "2026-09-18 14:52"
+    },
+    {
+      "folio": "MTY-1002",
+      "categoria": "Alumbrado público",
+      "descripcion": "n,mj",
+      "ubicacion": "jj",
+      "foto": "jjj",
+      "anonimo": true,
+      "contacto": null,
+      "estatus": "En Proceso",
+      "historial": [
+        {
+          "estatus": "Nuevo",
+          "fecha": "2026-09-18 14:56"
+        },
+        {
+          "estatus": "En Proceso",
+          "fecha": "2026-09-18 14:56"
+        }
+      ],
+      "fecha_registro": "2026-09-18 14:56"
+    }
+  ]
+}
